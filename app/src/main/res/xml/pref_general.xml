@@ -1,16 +1,17 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="example_switch"
-        android:summary="@string/pref_description_social_recommendations"
-        android:title="@string/pref_title_social_recommendations" />
-
     <EditTextPreference
         android:key="@string/pref_location_key"
         android:title="@string/pref_location_label"
         android:singleLine="true"
         android:defaultValue="@string/pref_location_default"
         android:inputType="textCapWords"/>
+
+    <ListPreference
+        android:key="@string/pref_units_key"
+        android:title="@string/pref_units_label"
+        android:defaultValue="@string/pref_units_default"
+        android:entryValues="@array/pref_units_values"
+        android:entries="@array/pref_units_options"/>
 
 </PreferenceScreen>

@@ -1,4 +1,5 @@
 package com.example.dev.sunshine;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -16,6 +17,7 @@ import android.preference.PreferenceManager;
 public class SettingsActivity extends PreferenceActivity
         implements Preference.OnPreferenceChangeListener {
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,10 +29,12 @@ public class SettingsActivity extends PreferenceActivity
         // updated when the preference changes.
         // TODO: Add preferences
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_location_key)));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_units_key)));
 
 
         this.getPreferences(MODE_PRIVATE).getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
     }
+
 
     /**
      * Attaches a listener so the summary is always updated with the preference value.

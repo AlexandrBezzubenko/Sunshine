@@ -1,14 +1,13 @@
 package com.example.dev.sunshine;
 
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -21,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -135,7 +133,7 @@ public class ForecastFragment extends Fragment {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
-            String forecastJsonStr = null;
+                String forecastJsonStr = null;
 
             String format = "json";
             String units = "metric";
@@ -214,6 +212,26 @@ public class ForecastFragment extends Fragment {
             mForecastAdapter.addAll(result);
         }
 
+        /**
+         * Prepare the weather high/lows for presentation.
+         */
+        private String formatHighLows(double high, double low, String unitType) {
+
+            if (unitType.equals(getString(R.string.pref_units_imperial))) {
+                high = (high * 1.8) + 32;
+                low = (low * 1.8) + 32;
+            } else if (!unitType.equals(getString(R.string.pref_units_metric))) {
+                Log.d(TAG, "Unit type not found: " + unitType);
+            }
+
+            // For presentation, assume the user doesn't care about tenths of a degree.
+            long roundedHigh = Math.round(high);
+            long roundedLow = Math.round(low);
+
+            String highLowStr = roundedHigh + "/" + roundedLow;
+            return highLowStr;
+        }
+
 
         /** The date/time conversion code is going to be moved outside the asynctask later,
          * so for convenience we're breaking it out into its own method now.
@@ -275,6 +293,12 @@ public class ForecastFragment extends Fragment {
             // now we work exclusively in UTC
             dayTime = new Time();
 
+            SharedPreferences sharedPrefs =
+                    PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String unitType = sharedPrefs.getString(
+                    getString(R.string.pref_units_key),
+                    getString(R.string.pref_units_metric));
+
             String[] resultStrs = new String[numDays];
             for(int i = 0; i < weatherArray.length(); i++) {
                 // For now, using the format "Day, description, hi/low"
@@ -303,7 +327,7 @@ public class ForecastFragment extends Fragment {
                 double high = temperatureObject.getDouble(OWM_MAX);
                 double low = temperatureObject.getDouble(OWM_MIN);
 
-                highAndLow = formatHighLows(high, low);
+                highAndLow = formatHighLows(high, low,unitType);
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
             }
 
